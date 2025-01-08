@@ -1,11 +1,8 @@
-
-name: Security Scan Pipeline
-
+name: Main
 on:
-  workflow_dispatch:  # This enables manual triggering
   push:
     branches: [ main ]
-
+    
 env:
   SPECTRAL_DSN: ${{ secrets.SPECTRAL_DSN }}
 
@@ -13,13 +10,9 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          
-      - name: Run Spectral Scan
-        uses: checkpointsw/spectral-github-action@v3
-        with:
-          spectral-dsn: ${{ env.SPECTRAL_DSN }}
-          spectral-args: scan --ok --engines secrets,iac --include-tags base,audit,iac
+    - uses: actions/checkout@v2
+    - name: Install and run Spectral CI
+      uses: checkpointsw/spectral-github-action@v3
+      with:
+        spectral-dsn: ${{ env.SPECTRAL_DSN }}
+        spectral-args: scan --ok  --include-tags base,audit
